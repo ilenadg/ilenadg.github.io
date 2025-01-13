@@ -71,3 +71,19 @@ h2 {
 .assignment p {
   margin-top: 0.5em;
 }
+
+/*-------------------------A1-------------------------------------*/
+#a1Body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#a1GIFTitle {
+  margin-bottom: - 100px;
+}
+#a1GIF {
+  transform: rotate(270deg);
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}

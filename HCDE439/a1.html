@@ -4,15 +4,79 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Ilenat's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>Ilena's Assignment 1!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
       <p>Here is all the documentation for assignment 1!</p>
+    </div>
+    <div id="a1Body">
+      <img id="a1GIF" src="a1_gif.GIF" />
+
+      <h2>Images!</h2>
+      <h3>Circut</h3>
+      <img id="a1Image" src="a1_image.jpg" />
+      <h3>Schematic</h3>
+      <img id="a1Schematic" src="a1_schematic.jpg" />
+      <h3>Work for deciding on a 220 Ohm Resistor</h3>
+      <img id="a1Work" src="a1_work.jpg" />
+      
+      <h2>Code!</h2>
+      <code>
+        // the setup function runs once when you press reset or power the board <br>
+        void setup() {<br>
+          // initialize digital pin 4 as an output.<br>
+          pinMode(4, OUTPUT);<br>
+          // initialize digital pin 7 as an output.<br>
+          pinMode(7, OUTPUT);<br>
+          // initialize digital pin 12 as an output.<br>
+          pinMode(12, OUTPUT);<br>
+        }<br>
+        <br>
+        // the loop function runs over and over again forever<br>
+        void loop() {<br>
+          // turn the LED (connected to pin 4) on (HIGH is the voltage level)<br>
+          digitalWrite(4, HIGH); <br>
+          // wait for 0.3 seconds  <br>
+          delay(300); <br>
+          // turn the LED off by making the voltage LOW <br>             
+          digitalWrite(4, LOW);<br>
+          // wait for 0.3 seconds<br>
+          delay(300); <br>
+          <br>
+          // turn the LED (connected to pin 7) on (HIGH is the voltage level)<br>
+          digitalWrite(7, HIGH);<br>
+          // wait for 0.3 seconds  <br>
+          delay(300); <br> 
+          // turn the LED off by making the voltage LOW  <br>          
+          digitalWrite(7, LOW); <br>
+          // wait for 0.3 seconds  <br>
+          delay(300);<br>
+          
+          // turn the LED (connected to pin 12) on (HIGH is the voltage level)<br>
+          digitalWrite(12, HIGH);  <br>
+          // wait for 0.3 seconds<br>
+          delay(300); <br>
+          // turn the LED off by making the voltage LOW <br>             
+          digitalWrite(12, LOW);<br>
+          // wait for 0.3 seconds  <br>
+          delay(300); <br>               
+        }<br>
+      </code>
+
+      <h2>Questions!</h2>
+      <p>1. Make a graph of Volts vs. Time for the LEDS</p>
+      <img id="a1Graph" src="a1_graph.jpg" />
+      <p>2. It looks like I can blink 13 LEDs independently with the arduino with: <br>
+            3.2V/220ohms = I = 14.55mA
+            14.55mA * 13inputs = <b>0.189A of current</b> <br>       
+      </p>
+      <br>
+      <p> 4. I can see blinking down until 10 miliseconds high/low. Anything faster than that is really hard to see.
+      </p>
     </div>
   </body>
 </html>
