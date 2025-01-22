@@ -4,15 +4,103 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Ilena's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 2!</h1>
+    <h1>Ilena's Assignment 2!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
       <p>Here is all the documentation for assignment 2!</p>
+    </div>
+    <div id="a2Body">
+      <img id="a2GIF" src="a2_gif.GIF" />
+      <p> This is my circut in action! When you press the button all the LEDs turn on. The red stays constant, while the blue and green fade from dim to bright together. Sorry the gif is short and does not capture everything.</p>
+
+      <h2>Images!</h2>
+      <h3>Circut</h3>
+      <img id="a2ArialImage" src="a2_arial_image.jpg" />
+      <img id="a2SideImage" src="a2_side_image.jpg" />
+      <h3>Schematic</h3>
+      <img id="a2Schematic" src="a2_Schematic.jpg" />
+      <p> I decided on the 220 resistor for the Red and Greed LEDs because I have been consistently using them in class and in assignments. <br>
+          To see work for how I mathmatically chose it, you can find the values plugged into ohms law in the A1 assignment where I found you need at least 160 ohms of resistance, so I chose the next closest higher number I have in resistors, 220. <br>
+          10k Ohms for the button helps us to use less power. The button would work with less but 10k is a nice convention.
+      </p>
+      
+      <h2>Code!</h2>
+      <code>
+      // int variable to represent pin 2 that will connect to button <br>
+      const int buttonPin = 2;<br>
+      // int variable to represent pin 13 that will connect to red led<br>
+      const int ledPinRed = 13;<br>
+      // int variable to represent pin 11 that will connect to green led<br>
+      const int ledPinGreen = 11;<br>
+      // int variable to represent pin 9 that will connect to blue led<br>
+      const int ledPinBlue = 9;<br>
+      <br>
+      // the setup function runs once when you press reset or power the board<br>
+      void setup() {<br>
+        // initialize digital pin ledPin as an output.<br>
+        pinMode(ledPinRed, OUTPUT);<br>
+        // initialize digital pin ledPinGreen as an output.<br>
+        pinMode(ledPinGreen, OUTPUT);<br>
+        // initialize digital pin ledPinBlue as an output.<br>
+        pinMode(ledPinBlue, OUTPUT);<br>
+        // initialize digital pin buttonPin as an input.<br>
+        pinMode(buttonPin, INPUT);<br> 
+      }<br>
+      <br>
+      // the loop function runs over and over again forever<br>
+      void loop() {<br>
+        // checks to see if the button in being pressed, if high it is.<br>
+        if (digitalRead(buttonPin) == HIGH) {<br>
+
+          // Turns on red led.<br>
+          digitalWrite(ledPinRed, HIGH);<br>
+          // Turns on blue led.<br>
+          digitalWrite(ledPinBlue, HIGH);<br>
+          //turns on green led.<br>
+          digitalWrite(ledPinGreen, HIGH);<br>
+          <br>
+          // for loop to incrimentally increase the brightness of the blue and green leds<br>
+          for (int i = 0; i <= 255; i++) {<br>
+              // sets green led to brightness of 'i'<br>
+              analogWrite(ledPinGreen, i);<br>
+              // sets blue led to brightness of 'i'<br>
+              analogWrite(ledPinBlue, i);<br>
+              // waits 0.05 seconds before returning to top of for loop<br>
+              delay(5);<br>
+          }<br>
+          <br>
+          // for loop to incrimentally decrease the brightness of the blue and green leds<br>
+          for (int i = 255; i >= 0; i--) {<br>
+              // sets green led to brightness of 'i'<br>
+              analogWrite(ledPinGreen, i);<br>
+              // sets blue led to brightness of 'i'<br>
+              analogWrite(ledPinBlue, i);<br>
+              // waits 0.05 sec<br>
+          } <br>
+        // if buttonpin reads "low" aka button is not pressed.<br>
+        } else {<br>
+          // Red led turns off.<br>
+          digitalWrite(ledPinRed, LOW);<br>
+          // Green led turns off.<br>
+          digitalWrite(ledPinGreen, LOW);<br>
+          // blue led turns off<br>
+          digitalWrite(ledPinBlue, LOW);<br>
+        }<br>
+      }<br>
+      </code>
+
+      <h2>Questions!</h2>
+      <p>1. Draw a chart where the X axis is time and the Y axis is voltage. Draw 3 lines representing the voltage across an LED with analogWrite(led, 64),
+         analogWrite(led, 128), and analogWrite(led,255).</p>
+      <img id="a2Graph" src="a2_graph.jpg" />
+      <p>2.Given your schematic, circuit, and firmware, assuming the only thing that draws current is your LEDs, how long would your circuit run if 
+         powered by a 1200 mAh battery? </p>
+      <img id="a2Question" src="a2_question2.jpg" />      
+
     </div>
   </body>
 </html>
