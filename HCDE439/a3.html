@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Ilena's Assignment 3!</h1>
+    <div class="header">
+      <p>For this assignment I decided to make a circut that would give users information on the amount of light their plants were recieving. <br>
+         For example an orchid needs 6-8 hours of filtered light a day. For the sake of the assignment requirements and time frame, I decided to use arbitrary numbers and ranges. I also made the time frame much shorter than 6-8 hours so it could hopefully be shown in the gif. <br>
+         There is a red LED that shows current light intensity and three LEDs that show the total amount of light the "plant" has recieved.
+         The blue LED is on when the plant hasn't recieved enough light, green turns on when the perfect amount of light has been recieved, and red turns on when too much light has been recieved.
+        </p>
+    </div>
+
+    <div id="a3Body">
+        <h3> This is my circut in action!</h3>
+        <p>GIF 1: Not enough light (blue led) to enough light (green led)</p>
+        <img id="a3GIF" src="a3_stuff/a3_gif.GIF" />
+        <p>GIF 2: Changing Light intensity</p>
+        <img id="a3GIF" src="a3_stuff/a3_gif.GIF" />
+        <p>Serial Monitor Example! (from a different run then the gifs were taken because I forgot to screenshot it)</p>
+        <img id="a3SerialMonitor" src="a3_stuff/a3_serialmonitor.png" />
+        
+  
+        <h2>Images!</h2>
+        <h3>Circut</h3>
+        <img id="a3ArialImage" src="a3_stuff/a3_arial_image.jpg" />
+        <img id="a3SideImage" src="a3_stuff/a3_side_image.jpg" />
+        <img id="a3SideImage" src="a3_stuff/a3_side_image(2).jpg" />
+
+        <h3>Schematic!</h3>
+        <img id="a3Schematic" src="a3_stuff/a3_schematic.jpg" />
+        <p> Work for 220 Ohms for Red and Green: Values plugged into ohms law where I found you need at least 160 ohms of resistance, so I chose the next closest higher number (too high would create too weak a current) I have in resistors, 220. </p>
+        <img id="a1Work" src="a1_stuff/a1_work.jpg" />
+        <p> Work for 100 Ohms for Blue: Values plugged into ohms law where I found you need at least 80 ohms of resistance, so I chose the next closest higher number (too high would create too weak a current) I have in resistors, 100. </p>
+        <img id="blueWork" src="work_blue.jpg" />
+        <h4>Why 10k ohms for photoresistor</h4>
+        <p> 10k Ohms for the photoresistor helps us to use less power. The photoresistor would work with less but 10k is a nice convention. Without resistence, when the variable resistor is no resistance current would be essentially infinite. </p>
+        
+        
+        <h2>Code!</h2>
+        <code>
+            // Variables <br>
+            // pin that the sensor (photoresistor) is attached to<br>
+            const int sensorPin = A0; <br>
+            // pin that the Red LED is attached to (fading) <br>
+            const int ledPinFade = 3; <br>
+            // pin that the Blue LED is attached to    <br>  
+            const int ledPinBlue = 10; <br>
+            // pin that the Green LED is attached to  <br>    
+            const int ledPinGreen = 11;<br>
+            // pin that the Red LED is attached to     <br>  
+            const int ledPinRed = 12;   <br>  
+            <br>
+            // the sensor value<br>
+            int sensorValue = 0; <br>
+            // minimum sensor value  <br>
+            int sensorMin = 1023; <br>
+            // maximum sensor value <br>
+            int sensorMax = 0; <br>
+            // amount of light plant is getting  <br>  
+            int lightTracker = 0; <br>
+            // will be referenced to see if light is too dim<br>
+            int lightMin = 0; <br>
+            // will be referenced to see if light is too bright<br>
+            int lightMax = 0; <br>
+            <br>
+            void setup() {<br>
+              // initializes serial monitor so that things can begin printing<br>
+              Serial.begin(9600);<br>
+              <br>
+              //initializes ledPinFade as an output<br>
+              pinMode(ledPinFade, OUTPUT);<br>
+              //initializes ledPinBlue as an output<br>
+              pinMode(ledPinBlue, OUTPUT);<br>
+              //initializes ledPinGreen as an output<br>
+              pinMode(ledPinGreen, OUTPUT);<br>
+              //initializes ledPinRed as an output<br>
+              pinMode(ledPinRed, OUTPUT);<br>
+              <br>
+              //Calibration<br>
+              // turn on all LEDs to signal the start of the calibration period:<br>
+              // fading red on <br>
+              digitalWrite(ledPinFade, HIGH);<br>
+              // blue on<br>
+              digitalWrite(ledPinBlue, HIGH);<br>
+              // green on<br>
+              digitalWrite(ledPinGreen, HIGH);<br>
+              // red on<br>
+              digitalWrite(ledPinRed, HIGH);<br>
+              <br>
+              // calibrate during the first five seconds<br>
+              while (millis() < 5000) {<br>
+                // reads valvue from voltage divider photoresistor<br>
+                sensorValue = analogRead(sensorPin);<br>
+                <br>
+                // record the maximum sensor value<br>
+                if (sensorValue > sensorMax) {<br>
+                  // update sensorMax to sensorValue if sensorValue is higher<br>
+                  sensorMax = sensorValue;<br>
+                }<br>
+                <br>
+                // record the minimum sensor value<br>
+                if (sensorValue < sensorMin) {<br>
+                  // update sensorMin to sensorValue if sensorValue is lower<br>
+                  sensorMin = sensorValue;<br>
+                }<br>
+              }<br>
+              <br>
+              // variable for the range of light intensity<br>
+              int lightRange = sensorMax - sensorMin;<br>
+              // note the bottom third of light itensity<br>
+              lightMin = (lightRange/3) + sensorMin;<br>
+              // note the top third of light itensity<br>
+              lightMax = ((lightRange/3) * 2) + sensorMin;<br>
+              <br>
+              // signal the end of the calibration period<br>
+              // Blue stays on to show that light is being tracked plant has not yet gotten enough light<br>
+              // fade red off<br>
+              digitalWrite(ledPinFade, LOW);<br>
+              // green off<br>
+              digitalWrite(ledPinGreen, LOW);<br>
+              // red off<br>
+              digitalWrite(ledPinRed, LOW);<br>
+            }<br>
+            <br>
+            void loop() {<br>
+                <br>
+              // read the sensor:<br>
+              sensorValue = analogRead(sensorPin);<br>
+              // print to sensor value to serial monitor<br>
+              Serial.println(sensorValue);<br>
+              <br>
+              // if sensor value is in the middle range of the lightrange<br>
+              if (sensorValue >= lightMin && sensorValue < lightMax) {<br>
+                // print to monitor that the light intesity is perfect<br>
+                Serial.println("The light intensity is perfect!");<br>
+                // add one point to the total light tracker<br>
+                lightTracker = lightTracker + 1;<br>
+              // if the sensorValue is in the bottom third of light range<br>
+              } else if (sensorValue < lightMin) {<br>
+                // print that the light intensity is too low to monitor<br>
+                Serial.println("The light intensity is too low!");<br>
+                <br>
+              // else (if sensorValue is in top third of light intensity range)<br>
+              } else {<br>
+                // print that the intensity it too high to the monitor<br>
+                Serial.println("The light intensity is too high! Please dim the light.");<br>
+                // add five points to light tracker<br>
+                lightTracker = lightTracker + 5;<br>
+              }<br>
+              <br>
+              // if the total amount of light is less than 360 (arbitrary number i chose to signify enough light for the make believe plant)<br>
+              if (lightTracker <= 360) {<br>
+                // blue light <br>
+                digitalWrite(ledPinBlue, HIGH);<br>
+                // print that the plant has not had enough light to monitor<br>
+                Serial.println("Your plant has not had enough light yet.");<br>
+                <br>
+              // if the total amount of light is between 360 and 480 (arbitrary numbers i chose to signify enough light for the make believe plant)<br>
+              } else if (lightTracker >= 360 && lightTracker < 480) {<br>
+                // blue led off<br>
+                digitalWrite(ledPinBlue, LOW);<br>
+                // green led on<br>
+                digitalWrite(ledPinGreen, HIGH);<br>
+                // print that plant has had enough light to monitor<br>
+                Serial.println("Your plant has enough light! Move to the shade for today.");<br>
+              // else (if the lighTracker is over 480) <br>
+              } else {<br>
+                // green led off<br>
+                digitalWrite(ledPinGreen, LOW);<br>
+                //print that the plant has had too much light to monitor<br>
+                Serial.println("Your plant has had too much light! Move it before it burns!");<br>
+                // red led on<br>
+                digitalWrite(ledPinRed, HIGH);<br>
+              }<br>
+              <br>
+              // in case the sensor value is outside the range seen during calibration<br>
+              sensorValue = constrain(sensorValue, sensorMin, sensorMax);<br>
+              // apply the calibration to the sensor reading<br>
+              sensorValue = map(sensorValue, sensorMin, sensorMax, 0, 255); <br>
+              // fade the LED using the calibrated value to show if the light is too bright<br>
+              analogWrite(ledPinFade, sensorValue);<br>
+              // delay so loop runs every second<br>
+              delay(1000);<br>
+            }<br>
+            
+        </code>
+  
+        <h2>Questions!</h2>
+        <p>1. In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</p>
+        <img id="a3Q1" src="a3_stuff/a3_question1.jpg" />
+        <p>2.Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</p>
+        <img id="a3Q2" src="a3_stuff/a3_question2.jpg" />    
+        <p>3. AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer. </p>
+        <img id="a3Q3" src="a3_stuff/a3_question3.jpg" />   
+  
+      </div>
+  </body>
+</html>
