@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Ilena's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Ilena's Assignment 4!</h1>
+    <div class="header">
+      <p>
+        This circut lets people know the temp and humidity of air around arduino. I decided to do this because the temperature and humidity in my room lately has been
+        weird due to the cold and a draft.
+        <br>
+        </p>
+    </div>
+
+    <div id="a4Body">
+        <p> Most of the firmware and the hardware placement is from Scott Campell at: <a href="https://www.circuitbasics.com/how-to-set-up-the-dht11-humidity-sensor-on-an-arduino/">circut basics</a>.
+            This was a link provided by the teaching staff on the slides. I already had come up with the idea but followed the link to see how to set up the sensor.
+            I think saw Campell had already worked out what I was planning to do, so I followed his steps to make the process smoother.
+            I changed the code up a bit and tried to comment thoroughly to make it more my own/prove I understood what was happening.
+            I created the schematics based off of the circut images, and followed them to make my circut.</p>
+        </p>
+        <h3> This is my circut in action!</h3>
+        <p>GIF 1: Changing temperature</p>
+        <img id="a4GIF" src="a4_stuff/a4_gif.GIF" />
+        <p>Image: Reading</p>
+        <img id="a4SideImage" src="a4_stuff/a4_side_image(3).jpg" />
+        <p>Serial Monitor Example!</p>
+        <img id="a4SerialMonitor" src="a4_stuff/a4_serialmonitor.png" />
+        
+  
+        <h2>Images!</h2>
+        <h3>Circut</h3>
+        <img id="a4ArialImage" src="a4_stuff/a4_arial_image.jpg" />
+        <img id="a4SideImage" src="a4_stuff/a4_side_image.jpg" />
+        <img id="a4SideImage" src="a4_stuff/a4_side_image(2).jpg" />
+
+        <h3>Schematic!</h3>
+        <img id="a4Schematic" src="a4_stuff/a4_schematic.jpg" />
+        <h4>Why 220 ohms and a potentiometer for the LCD?</h4>
+        <p>The 220 ohm resistor sets the background brightness for the display (the less resistence the brighter the background). I went with 220 ohm because I like that level of brightness and it is also a typical one used for this display according to the circut basics website.  </p>
+        <p>The potentiometer is used to adjust the screen contrast. I like high contrast!</p>
+        
+        <h2>Code!</h2>
+        <code>
+            <pre>
+                //includes the dht11 library
+                #include <dht.h>
+                //includes the LCD library
+                #include <LiquidCrystal.h>
+                
+                // initiallized LCD display and pins being used
+                LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
+                
+                // initializes humitity and temp sensore
+                dht DHT;
+                
+                // sets pin two to be the data signal pin for the temp/hum sensor
+                //#define DHT11_PIN 2
+                const int DHT11_PIN = 2;
+                
+                
+                // runs once when arduino begins
+                void setup(){
+                  // turns on display (display is 16x2)
+                  lcd.begin(16, 2);
+                  //turns on serial monitor
+                  Serial.begin(9600);
+                }
+                
+                // loops over and over again
+                void loop(){
+                  // gets temp and humitiy reading from sensor
+                  int sensorReading = DHT.read11(DHT11_PIN);
+                  // tells display to start printing at the beginning of the top line
+                  lcd.setCursor(0,0); 
+                  // prints "T: " to LCD screen
+                  lcd.print("T: ");
+                  // prints the temperature to LCD screen
+                  lcd.print(DHT.temperature);
+                  // prints the degree symbol
+                  lcd.print((char)223);
+                  // prints "C" for celcius
+                  lcd.print("C");
+                  // tells display to start printing at the beginning of the bottom line
+                  lcd.setCursor(0,1);
+                  // prints "H: " to LCD screen
+                  lcd.print("H: ");
+                  // prints the Humidity to LCD screen
+                  lcd.print(DHT.humidity);
+                  // prints "%" to represent percent humidity
+                  lcd.print("%");
+                  // delays for 1 second before repeating
+                  delay(1000);
+                
+                  // prints "Temperature: " to Serial monitor
+                  Serial.print("Temperature: ");
+                  // prints the temperature to Serial Monitor
+                  Serial.print(DHT.temperature);
+                  // prints the degree symbol to monitor
+                  Serial.print((char)223);
+                  // prints "C" for celcius to monitor
+                  Serial.println("C");
+                
+                  // prints "Humidity: " to serial monitor
+                  Serial.print("Humidity: ");
+                  // prints the Humidity to serial monitor
+                  Serial.print(DHT.humidity);
+                  // prints "%" to represent percent humidity to monitor
+                  Serial.println("%");
+                }
+            </pre>
+        </code>
+  
+        <h2>Questions!</h2>
+        <p><b>1. Say you are using a servo motor you attach to pin 9. In your loop() you have the following code:</b></p>
+            <code>
+            <pre>
+                for (int i=0; i&lt;180; i++)c{
+                    servo.write(i); 
+                    delay(100);
+                }
+            </pre>
+            </code> 
+        <p><b>Draw a graph with the X axis in seconds, for two seconds, and the y-axis the voltage at pin 9 with respect to ground.</b></p>
+        <img id="a4Q1" src="a4_stuff/a4_question1.jpg" />
+        <p><b>2.Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</b></p>   
+        <p> take 10 readings <br>
+            remove the three highest<br>
+            remove the three lowest<br>
+            average the middle ones<br>
+            keep average and use as value<br>
+        </p>
+        <p><b>3. Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</b></p>
+        <p> 
+            calibrate for 5 seconds <br>
+                find sensorMax, sensorMin, and sensorAvg<br>
+            
+            sensorValue equals new reading<br>
+            if sensorValue &lt; 1.1*sensorAvg <br>
+                sensorValue = sensorMin<br>
+            else if sensorValue &gt; 1.1*sensorAvg<br>
+                sensorValue = sensorMax<br>
+        </p> 
+  
+      </div>
+  </body>
+</html>
