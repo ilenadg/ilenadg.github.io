@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Ilena's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Ilena's Disco Bat!</h1>
+    <div class="header">
+      
+      <img src="discobat_stuff/discobat.jpg" />
+      <img src="discobat_stuff/discobat2.jpg" />
+    </div>
+
+    <br>
+    <p>Disco Bat is the Ultimate Halloween party decoration!</p>
+
+    <br>
+
+    <div class="db_context">
+      <h3>Context and Motivation</h3>
+      <p>Bats and disco balls both hang from the ceiling, so a cross between the two would be the perfect halloween decoration. But this decoration could also have a utilitarian use. A good party (like one with a disco bat) has a lot of people having fun!  It can get hot, humid, and crazy. That's why disco bat can sense the room's temperature and humidity as well as how close someone is to the decoration. These numbers are displayed on a webpage where the host can see and decide if a window needs to be cracked for fresh air, or if people are getting too close to disco bat they can take it down. We wouldn’t want anyone to break disco bat would we.
+        <br>
+        In addition, I recently learned that bats look like they are raving when hanging upside down. Disco Bat seems even more appropriate after this new information. Take a look at this <a href="https://www.youtube.com/watch?v=bS6KWNB5NEo">Youtube Video</a>! I don't know who the original poster is, but a few clips are featured in my demo/music video for disco bat.
+        </p>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="db_context">
+      <h3>Technical Implementation</h3>
+        <br>
+      <h4>Bill of Materials</h4>
+      <ul>
+        <li>Ultrasonic Sensor</li>
+        <li>DHT sensor</li>
+        <li>Wires</li>
+        <li>Mini breadboard</li>
+        <li>28byj-48 Stepper Motor</li>
+        <li>Stepper Motor Driver Board</li>
+        <li>Electrical Tape</li>
+        <li>Duct Tape</li>
+        <li>Glue Dots</li>
+        <li>Mylar Aluminum Emergency Blanket</li>
+        <li>Cardboard</li>
+        <li>Jewelry Wire</li>
+      </ul>
+      <br>
+
+      <h4>Schematic</h4>
+      <img src="discobat_stuff/schematic.jpg" />
+      <br>
+      <h4>Circuit</h4>
+      <p><b>The Arduino</b></p>
+      <br>
+      <img src="discobat_stuff/circuit.jpg" />
+      <p> Just the arduino and the connecting wires.</p>
+      <br>
+      <img src="discobat_stuff/circuit2.jpg"/>
+      <p>Everything connected to the bat</p>
+      <br>
+
+      <p><b>The Autospy</b></p>
+      <br>
+      <img src="discobat_stuff/autopsy.jpg" />
+      <p>The inside of the bat's body with the mini breadboard for the sensor's power and ground, and the DHT wires running through the skeleton.</p>
+      <br>
+      <img src="discobat_stuff/autopsy2.jpg" />
+      <p>The inside of the bat's head with the ulrasonic sensor.</p>
+      <br>
+      <img src="discobat_stuff/autopsy3.jpg" />
+      <p>The wires grouped and running out of the back next to the dht sensor.</p>
+
+      <br>
+      <br>
+
+      <h4>How It All Works</h4>
+      <br>
+      <p>
+            Cardboard makes up the skeleton of the bat. Using fitted openings, the ultrasonic sensor and DHT sensor poke out of the face and butt of the bat respectively and are securely in place with jewelry wire and electrical tape. Wires run through the bat and out the back. Using the mini breadboard, the power for the two sensors are made parallel so that only one wire needs to run out of the bat to connect both to a power source. The same can be said for the ground. See a reference photo for the bats inner connections under “The Autopsy”.
+            <br>
+            The wires that need to connect to the arduino run out of the back of the bat and connect to the proper pins, power sources, and ground on the arduino. No extra resistors or connections were needed.
+            <br>
+            The stepper motor is connected to the stepper motor driver which connects the motor to the arduino’s power, ground, and 4 pins for the stepper motor’s operation. Resistors are built into the driver. The shaft of the stepper motor connects to the bottom of the bat and spins the bat back and forth 180 degrees when the arduino is on.
+            <br>
+            The arduino code has two main functions 1: to control the movement of the motor and 2: to collect sensor data to print them to the serial monitor. The code is dependant on the dht.h and stepper.h libraries to perform these tasks. The dht library allows for easy communication writing between the sensor and the arduino. Using a simple call, the arduino can retrieve the humidity and temperature readings with a singular pin and then print them to the serial monitor so they can later be displayed on a website using P5.js. The ultrasonic sensor is connected to two pins, one that triggers a high pitched frequency and one that waits to receive the time it took for that frequency’s echo to return. Once this time data is received a secondary function (from arduino example code) turns that time in microseconds into inches. This is how the bat determines the how far an object is from it. Like the humidity and temperature, the distance data is then printed to serial so that it can be displayed on the web.
+            <br>
+            The stepper motor moves in segments of 64 steps. Using a stepCount variable to keep track of how many steps have been taken, the the motor takes 64 steps every time the loop function runs and then the sensor data is collected. The motor moves until it gets to 180 degrees or 1024 steps and then it switches direction. I decided on it only taking a few steps at a time so that the sensor data can be as accurate as possible. If I had it step 180 degrees at once, the arduino would have to wait until the stepper motor was back where it began to take sensor readings.
+            <br>
+            In a separate environment I wrote files for a website so the host could see the environment data. This includes an index.html which structures the site and an index.js which deals with all of the interaction between the site, the arduino, and the arduino code. There are three functions from example class code that deal with the serial communication in index.js. They essentially allow the user to connect their arduino to the site so they can see the information. They also let the user disconnect and check for proper connection to the arduino via the port it is plugged into. For its main function draw, when something from the arduino code is serial printed, the code then displays it on the website. The js code has other smaller style functionalities like making a white canvas or styling the site.
+      </p>
+
+      <br>
+      <br>
+
+      <h4>Final Code</h4>
+      <br>
+      <p>Arduino</p>
+      <code>
+        <pre>
+            //includes the dht11 library
+            #include <dht.h>
+            //includes the stepper library
+            #include <Stepper.h>
+            // initializes humitity and temp sensor
+            dht DHT;
+            
+            // give sensor pins a descriptive name
+            const int dhtPin = A1;
+            const int trigPin = 3;
+            const int echoPin = A3;
+            
+            // keeps track of how many steps the motor has taken (if positive the motor spins counterclockwise if negative then clockwise)
+            int stepCount = 1024;
+            
+            const int stepsPerRevolution = 2048;
+            //initializer the stepper object and set stepper motors step amount and pin connections
+            Stepper myStepper(stepsPerRevolution, 8, 9, 10, 11);
+            
+            void setup() {
+              // set the speed of the motor to 3 RPMs
+              myStepper.setSpeed(3);
+              //sensor trigger is an output, initially off
+              pinMode(trigPin, OUTPUT);
+              // sensor echo is an input, initially off
+              pinMode(echoPin, INPUT);
+              // starts the serial feed, baud rate 9600 
+              Serial.begin(9600);
+              // timeout for parsing
+              Serial.setTimeout(10); 
+              
+            }
+            
+            void loop() {
+              /* moving the step motor begin*/
+              // if the step count is greater than zero 
+              if (stepCount &gt;= 0) {
+                // step moptor moves 64 steps counterclockwise
+                myStepper.step(-64);
+                //step count decreases by 64
+                stepCount = stepCount - 64;
+              // if the step count is less than zero 
+              } else if (stepCount &lt; 0) {
+                // step moptor moves 64 steps clockwise
+                myStepper.step(64);
+                //step count decreases by 64
+                stepCount = stepCount - 64;
+              }
+              // reset step count to 1024 after bat has moved 180 degrees and back
+              if (stepCount &lt;= -1024) {
+                stepCount = 1024;
+              }
+              /* moving the step motor end*/
+            
+              /*Ultra sonic Reading begin*/
+              // establish variables for duration of the ping , and the distance result
+              // in inches and centimeters:
+              long duration, inches, cm;
+              // short LOW pulse beforehand to ensure a clean HIGH pulse
+              digitalWrite(trigPin, LOW);
+              // delays for 2 microseconds
+              delayMicroseconds(2);
+              // sensor sends of a sonic pulse
+              digitalWrite(trigPin, HIGH);
+              // delays for 5 microseconds
+              delayMicroseconds(5);
+              // stops high pulse
+              digitalWrite(trigPin, LOW);
+              // sensor recieves time it takes for an echo of pulse off an object
+              duration = pulseIn(echoPin, HIGH);
+              // convert the time into a distance
+              inches = microsecondsToInches(duration);
+              /*Ultra Sonic reading end*/
+            
+              // gets temp and humitiy reading from sensor
+              int dhtReading = DHT.read11(dhtPin);
+            
+              // prints whats in quotes to screen
+              Serial.print("Temperature: ");
+              // prints temperature
+              Serial.print(DHT.temperature);
+              // prints whats in quotes to screen
+              Serial.print(" C, ");
+              // prints whats in quotes to screen
+              Serial.print("Humidity: ");
+              // prints humidity
+              Serial.print(DHT.humidity);
+              // prints whats in quotes to screen
+              Serial.print("%, ");
+              // prints whats in quotes to screen
+              Serial.print("Distance: ");
+              // prints inches
+              Serial.print(inches);
+              // prints whats in quotes to screen
+              Serial.println("in");
+            
+              // delay for 0.25 seconds
+              // let everything catch up
+              delay(400);
+            }
+            
+            // converts microseconds to inches (from example code)
+            long microsecondsToInches(long microseconds) {
+              // According to Parallax's datasheet for the PING, there are 73.746
+              // microseconds per inch (i.e. sound travels at 1130 feet per second).
+              // This gives the distance travelled by the ping, outbound and return,
+              // so we divide by 2 to get the distance of the obstacle.
+              // See: https://www.parallax.com/package/ping-ultrasonic-distance-sensor-downloads/
+              return microseconds / 74 / 2;
+            }
+        </pre>
+      </code>
+      <br>
+      <p>Index.js - Using P5</p>
+      <code>
+        <pre>
+            // the baud rate in Arduino sketch
+            const BAUD_RATE = 9600; 
+            // Declare global variables
+            let port, connectBtn; 
+
+            // runs once at beginning of program
+            function setup() {
+            // Run serial setup function (below)
+            setupSerial(); 
+
+            // Create a canvas that is the size of our browser window.
+            // windowWidth and windowHeight are p5 variables
+            createCanvas(windowWidth, windowHeight);
+
+            // p5 text settings. BOLD and CENTER are constants provided by p5.
+            textFont("system-ui", 50);
+            // text is bolded
+            textStyle(BOLD);
+            //text is aligned to be in the center of the screen
+            textAlign(CENTER, CENTER); 
+            }
+
+            // draw function runs forever
+            function draw() {
+            
+            // Check whether the port is open (see checkPort function below)
+            const portIsOpen = checkPort(); 
+            // If the port is not open, exit the draw loop
+            if (!portIsOpen) return; 
+            
+            
+            // reads the port until it reaches a line break
+            let str = port.readUntil("\n");
+            // If we didn't read anything, return.
+            if (str.length == 0) return; 
+            
+            // clears the screen
+            clear();
+            // black outline
+            stroke(255);
+            // string read from port printed in center of screen
+            text(str, width / 2, height / 2);
+            fill("black");
+            }
+
+            // BELOW IS FROM CLASS EXAMPLE  FOR SETTING UP WEB SERIAL
+            // Three helper functions for managing the serial connection.
+            function setupSerial() {
+            port = createSerial();
+
+            // Check to see if there are any ports we have used previously
+            let usedPorts = usedSerialPorts();
+            if (usedPorts.length > 0) {
+                // If there are ports we've used, open the first one
+                port.open(usedPorts[0], BAUD_RATE);
+            }
+
+            // create a connect button
+            connectBtn = createButton("Connect to Arduino");
+            // Position the button in the top left of the screen.
+            connectBtn.position(5, 5); 
+            // When the button is clicked, run the onConnectButtonClicked function
+            connectBtn.mouseClicked(onConnectButtonClicked); 
+            }
+
+            function checkPort() {
+            if (!port.opened()) {
+                // If the port is not open, change button text
+                connectBtn.html("Connect to Arduino");
+                // Set background to gray
+                background("gray");
+                return false;
+            } else {
+                // Otherwise we are connected
+                connectBtn.html("Disconnect");
+                return true;
+            }
+            }
+
+            function onConnectButtonClicked() {
+            // When the connect button is clicked
+            if (!port.opened()) {
+                // If the port is not opened, we open it
+                port.open(BAUD_RATE);
+            } else {
+                // Otherwise, we close it!
+                port.close();
+            }
+            }
+        </pre>
+      </code>
+      <br>
+      <br>
+      <h4>Demo Videos</h4>
+      <a href="https://youtu.be/FInaQQhNwas">Normal/Boring Demo Video</a><br>
+      <a href="https://youtu.be/rEdfOVJg8HI">Fun Music/Demo Video</a>
+    </div>
+  </body>
+</html>
